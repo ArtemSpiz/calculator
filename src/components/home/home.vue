@@ -1,14 +1,29 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 
 const inputValue = ref('0')
 const isResult = ref(false)
 const previousAct = ref('')
 const lastOperation = ref('')
 const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'f', '0', '.']
+const historyInput = ref([])
+const historyResult = ref([])
+const showHistory = ref(false)
+const stateMap = {
+	inputValue,
+	previousAct,
+	lastOperation,
+	isResult,
+	historyInput,
+	historyResult,
+	showHistory,
+}
 
 const deleteIcon = computed(
-	() => isResult.value || inputValue.value < 3 || inputValue.value == 'Error'
+	() =>
+		isResult.value ||
+		inputValue.value.length <= 3 ||
+		inputValue.value == 'Error'
 )
 
 function AppendToValue(value) {
@@ -24,6 +39,7 @@ function AppendToValue(value) {
 	if (isResult.value) {
 		if (/\d/.test(value)) {
 			inputValue.value = value === '.' ? '0.' : value
+			previousAct.value = ''
 		} else {
 			inputValue.value += value
 		}
@@ -42,8 +58,19 @@ function AppendToValue(value) {
 	}
 }
 
+function clearHistory() {
+	historyInput.value = []
+	historyResult.value = []
+	localStorage.removeItem('calc_historyInput')
+	localStorage.removeItem('calc_historyResult')
+}
+
 function clearInput() {
-	if (isResult.value || inputValue.value < 3 || inputValue.value == 'Error') {
+	if (
+		isResult.value ||
+		inputValue.value.length <= 3 ||
+		inputValue.value == 'Error'
+	) {
 		inputValue.value = '0'
 		previousAct.value = ''
 		lastOperation.value = ''
@@ -73,10 +100,12 @@ function percent() {
 function calculateResult() {
 	try {
 		const isPureNumber = /^\d+(\.\d+)?$/.test(inputValue.value)
-		if (isPureNumber) {
+
+		if (isPureNumber && isResult.value == false) {
 			previousAct.value = ''
 			return
 		}
+
 		if (isResult.value && lastOperation.value) {
 			inputValue.value += lastOperation.value
 			previousAct.value = inputValue.value + '='
@@ -85,25 +114,48 @@ function calculateResult() {
 			lastOperation.value = match ? match[0] : ''
 			previousAct.value = inputValue.value + '='
 		}
+
 		const result = eval(inputValue.value)
-		inputValue.value = Number(result)
+		const formattedResult = Number(result)
 			.toFixed(4)
 			.replace(/\.?0+$/, '')
+		inputValue.value = formattedResult
 		isResult.value = true
+
+		historyInput.value.push(`${previousAct.value}`)
+		historyResult.value.push(`${formattedResult}`)
 	} catch {
 		inputValue.value = 'Error'
 		isResult.value = false
 		lastOperation.value = ''
-		previousAct.value = ''
 	}
 }
+
+for (const [key, refVar] of Object.entries(stateMap)) {
+	watch(
+		refVar,
+		newVal => {
+			localStorage.setItem(`calc_${key}`, JSON.stringify(newVal))
+		},
+		{ deep: true }
+	)
+}
+
+onMounted(() => {
+	for (const [key, refVar] of Object.entries(stateMap)) {
+		const saved = localStorage.getItem(`calc_${key}`)
+		if (saved !== null) {
+			refVar.value = JSON.parse(saved)
+		}
+	}
+})
 </script>
 
 <template>
 	<div class="calculator">
 		<div class="container">
 			<div class="input-container">
-				<div class="memory">
+				<div class="memory" @click="showHistory = !showHistory">
 					<svg
 						viewBox="0 0 24 24"
 						fill="none"
@@ -140,8 +192,23 @@ function calculateResult() {
 						</g>
 					</svg>
 				</div>
+
 				<div class="previousAct">{{ previousAct }}</div>
 				<input type="text" class="input" :value="inputValue" readonly />
+			</div>
+
+			<div v-if="showHistory" class="history-panel">
+				<div class="history-scroll">
+					<button class="clear-history" @click="clearHistory">Очистити</button>
+					<div
+						v-for="(input, index) in historyInput"
+						:key="index"
+						class="history-entry"
+					>
+						<div class="history-input">{{ input }}</div>
+						<div class="history-result">{{ historyResult[index] }}</div>
+					</div>
+				</div>
 			</div>
 			<div class="buttons">
 				<div class="left-but">
