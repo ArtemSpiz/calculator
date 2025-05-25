@@ -1,0 +1,115 @@
+.calculator {
+	background-color: black;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.container {
+	width: 100%;
+	max-width: 400px;
+	display: flex;
+	flex-direction: column;
+}
+
+.input-container {
+	width: 100%;
+	height: 120px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	padding: 15px;
+	box-sizing: border-box;
+	position: relative;
+	flex-direction: column;
+}
+
+.memory {
+	position: absolute;
+	top: -20%;
+	left: 0;
+}
+
+.previousAct {
+	color: #4e4d4d;
+	font-size: 35px;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 500;
+	text-align: right;
+}
+
+.input {
+	width: 100%;
+	background-color: transparent;
+	color: white;
+	font-size: 60px;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: 500;
+	text-align: right;
+	border: none;
+	outline: none;
+}
+
+.buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.left-but {
+	display: flex;
+	flex-direction: column;
+	flex: 3;
+	gap: 10px;
+}
+
+.gray-buttons {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+}
+
+.num-buttons {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-auto-rows: 80px;
+	gap: 10px;
+}
+
+.orange-buttons {
+	display: grid;
+	grid-template-rows: repeat(5, 80px);
+	gap: 10px;
+	flex: 1;
+}
+
+button {
+	border: none;
+	border-radius: 100%;
+	font-size: 28px;
+	font-weight: bold;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	height: 80px;
+}
+
+.gray {
+	background-color: #a5a5a5;
+	color: black;
+}
+
+.number {
+	background-color: #333333;
+}
+
+.orange {
+	background-color: #ff9f0a;
+}
+
+button:active {
+	opacity: 0.7;
+}
