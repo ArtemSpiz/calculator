@@ -71,7 +71,7 @@ function closeHistory() {
 }
 
 function factorial(n) {
-	if (n < 0) return Error
+	if (n < 0) return 'Error'
 	if (n == 0 || n == 1) return 1
 	let result = 1
 	for (let i = 2; i <= n; i++) result *= i
@@ -193,13 +193,12 @@ function AppendToValue(value) {
 		if (/\d/.test(value)) {
 			inputValue.value = value === '.' ? '0.' : value
 			evalExpression.value = value === '.' ? '0.' : value
-			я
+			previousAct.value = ''
 		} else {
 			inputValue.value += value
 			evalExpression.value += value
+			previousAct.value = ''
 		}
-		previousAct.value = ''
-
 		isResult.value = false
 	} else {
 		if (
@@ -261,6 +260,8 @@ function percent() {
 		isResult.value = true
 	}
 }
+
+window.factorial = factorial
 
 function calculateResult() {
 	const lastChar = evalExpression.value.trim().slice(-1)
