@@ -13,7 +13,7 @@
 
 .container {
 	width: 100%;
-	max-width: 400px;
+	max-width: 350px;
 	display: flex;
 	flex-direction: column;
 }
@@ -30,17 +30,34 @@
 	flex-direction: column;
 }
 
+.history-buttons {
+	display: flex;
+	gap: 10px;
+	width: 100%;
+}
+
+.close-button,
 .clear-history {
+	flex: 1;
 	background-color: transparent;
-	color: red;
 	font-size: 20px;
 	height: 35px;
-	border: 1px solid red;
-	border-radius: 0;
 	padding: 0 10px;
+	border-radius: 0;
 	transition: opacity 0.5s ease;
 }
 
+.close-button {
+	color: orangered;
+	border: 1px solid orangered;
+}
+
+.clear-history {
+	color: red;
+	border: 1px solid red;
+}
+
+.close-button:hover,
 .clear-history:hover {
 	opacity: 0.7;
 }
@@ -49,15 +66,21 @@
 	position: absolute;
 	top: 0;
 	right: 0;
-	width: 220px;
 	height: 100%;
-	overflow-y: scroll;
-	background-color: #181818;
+	width: 300px;
 	border-left: 1px solid #4e4d4d;
-	overflow-y: auto;
-	z-index: 999;
-	padding: 10px;
-	box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+	background: #181818;
+	box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.5s ease-in-out;
+	transform: translateX(100%);
+	opacity: 0;
+	z-index: 10;
+	padding: 15px;
+}
+
+.history-panel.show {
+	opacity: 1;
+	transform: translateX(0%);
 }
 
 .history-scroll {
@@ -67,9 +90,6 @@
 }
 
 .history-input {
-	border-top: 1px solid #333333;
-	padding-top: 10px;
-	word-break: break-word;
 	color: rgb(105, 105, 105);
 	font-size: 15px;
 	font-family: 'Courier New', Courier, monospace;
@@ -87,10 +107,29 @@
 	height: 1px;
 }
 
+.history-entry {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	border-top: 1px solid #333333;
+	padding-top: 10px;
+}
+
+.history-entry-text {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.history-entry-delete {
+	cursor: pointer;
+}
+
 .memory {
 	position: absolute;
 	top: -45%;
 	left: 0;
+	cursor: pointer;
 }
 
 .previousAct {
@@ -116,6 +155,15 @@
 .buttons {
 	display: flex;
 	gap: 10px;
+	align-items: end;
+	flex-direction: column;
+	width: 100%;
+}
+
+.activeComplexButtons {
+	display: flex;
+	gap: 10px;
+	width: 100%;
 }
 
 .left-but {
@@ -128,6 +176,7 @@
 .gray-buttons {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
+	grid-auto-rows: 80px;
 	gap: 10px;
 }
 
@@ -148,7 +197,7 @@
 button {
 	border: none;
 	border-radius: 100%;
-	font-size: 28px;
+	font-size: 20px;
 	font-weight: bold;
 	color: white;
 	cursor: pointer;
@@ -156,13 +205,28 @@ button {
 	height: 80px;
 }
 
+.darkGray-buttons {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 5px;
+	width: 100%;
+}
+
+.complexAct {
+	color: white;
+	font-size: 15px;
+	font-weight: 600;
+	height: 50px;
+	background-color: #0f0f0f;
+}
+
 .gray {
-	background-color: #a5a5a5;
-	color: black;
+	background-color: #666565;
+	color: white;
 }
 
 .number {
-	background-color: #333333;
+	background-color: #222121;
 }
 
 .orange {
@@ -171,4 +235,24 @@ button {
 
 button:active {
 	opacity: 0.7;
+}
+
+.show-mode button {
+	height: 60px;
+}
+
+.show-mode .memory {
+	top: -30%;
+}
+
+.active-ComBut {
+	grid-auto-rows: auto;
+}
+
+.orangeActive-ComBut {
+	grid-template-rows: repeat(5, 60px);
+}
+
+.show-mode .input {
+	font-size: 50px;
 }
