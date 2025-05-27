@@ -140,8 +140,9 @@ function AppendToValue(value) {
 	}
 
 	if (value === '!') {
-		inputValue.value = `(${inputValue.value})!`
+		inputValue.value += '!'
 		evalExpression.value = `factorial(${evalExpression.value})`
+		isResult.value = true
 		return
 	}
 
@@ -192,11 +193,13 @@ function AppendToValue(value) {
 		if (/\d/.test(value)) {
 			inputValue.value = value === '.' ? '0.' : value
 			evalExpression.value = value === '.' ? '0.' : value
-			previousAct.value = ''
+			я
 		} else {
 			inputValue.value += value
 			evalExpression.value += value
 		}
+		previousAct.value = ''
+
 		isResult.value = false
 	} else {
 		if (
@@ -267,6 +270,7 @@ function calculateResult() {
 
 	try {
 		if (isResult.value && lastOperation.value) {
+			inputValue.value = inputValue.value + lastOperation.value
 			evalExpression.value += lastOperation.value
 			previousAct.value = inputValue.value + '='
 		} else if (
