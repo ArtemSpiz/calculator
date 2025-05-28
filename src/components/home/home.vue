@@ -8,7 +8,12 @@ const previousAct = ref('')
 const lastOperation = ref('')
 const showComplexButtons = ref(false)
 const waitingForPower = ref(false)
+
 const waitingForLog = ref(false)
+const logBase = ref('')
+const logArgument = ref('')
+const logStage = ref(null)
+
 const tempValue = ref('')
 const tempEval = ref('')
 
@@ -147,17 +152,31 @@ function AppendToValue(value) {
 	}
 
 	if (value === 'log') {
-		tempValue.value = inputValue.value
-		tempEval.value = evalExpression.value
-		waitingForLog.value = true
+		logBase.value = inputValue.value
+		logArgument.value = ''
+		inputValue.value = `log₍${logBase.value}₎(`
 		evalExpression.value = ''
+		waitingForLog.value = true
+		logStage.value = 'argument'
 		return
 	}
 
-	if (waitingForLog.value && value !== 'log') {
-		inputValue.value = `log₍${tempValue.value}₎(${value})`
-		evalExpression.value = `(Math.log(${value}) / Math.log(${tempEval.value}))`
-		waitingForLog.value = false
+	if (waitingForLog.value && logStage.value === 'argument') {
+		if (value === ')') {
+			inputValue.value += `)`
+			const convertToJsValue = str => {
+				return str.replaceAll('π', 'Math.PI').replaceAll('e', 'Math.E')
+			}
+			evalExpression.value = `(Math.log(${convertToJsValue(
+				logArgument.value
+			)}) / Math.log(${convertToJsValue(logBase.value)}))`
+
+			waitingForLog.value = false
+			logStage.value = null
+		} else {
+			logArgument.value += value
+			inputValue.value = `log₍${logBase.value}₎(${logArgument.value}`
+		}
 		return
 	}
 
